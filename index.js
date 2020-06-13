@@ -9,7 +9,6 @@ module.exports = class InboxUnreadCount extends Plugin {
         const AnimatedUnreadChannelMessages = await getModule(m => m.type && m.type.displayName == 'AnimatedUnreadChannelMessages')
 
         inject('inbox-unread-count', AnimatedUnreadChannelMessages, 'type', (args, res) => {
-            console.log(args, res)
             if (!res.props.children || !res.props.children.type || !res.props.children.type.type) return res
 
             const { type } = res.props.children.type
@@ -17,7 +16,6 @@ module.exports = class InboxUnreadCount extends Plugin {
             res.props.children.type.type = (...a) => {
                 const r = type(...a)
                 if (!r) return r
-                console.log(a, r)
 
                 const { messages } = a[0].channel
                 console.log(messages)
