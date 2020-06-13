@@ -8,7 +8,7 @@ module.exports = class InboxUnreadCount extends Plugin {
         const { dateFormat, isSameDay } = await getModule(['dateFormat'])
         const AnimatedUnreadChannelMessages = await getModule(m => m.type && m.type.displayName == 'AnimatedUnreadChannelMessages')
 
-        inject('inbox-unread-count', AnimatedUnreadChannelMessages, 'type', (args, res) => {
+        inject('inbox-unread-count', AnimatedUnreadChannelMessages, 'type', (_, res) => {
             if (!res.props.children || !res.props.children.type || !res.props.children.type.type) return res
 
             const { type } = res.props.children.type
@@ -18,7 +18,6 @@ module.exports = class InboxUnreadCount extends Plugin {
                 if (!r) return r
 
                 const { messages } = a[0].channel
-                console.log(messages)
                 if (!messages.length) return r
                 const since = dateFormat(messages[0].timestamp, isSameDay(messages[0].timestamp, { toDate: () => new Date }) ? 'LT' : 'LLL')
                 r.props.children.splice(1, 0,
