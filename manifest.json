@@ -1,0 +1,7 @@
+{
+    "name": "Inbox Unread Count",
+    "description": "Brings back unread counter to inbox (enable inbox in experiments if you don't have it).",
+    "author": "Juby210#0577",
+    "version": "1.0.0",
+    "license": "MIT"
+}
