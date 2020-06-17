@@ -6,9 +6,9 @@ const { inject, uninject } = require('powercord/injector')
 module.exports = class InboxUnreadCount extends Plugin {
     async startPlugin() {
         const { dateFormat, isSameDay } = await getModule(['dateFormat'])
-        const AnimatedUnreadChannelMessages = await getModule(m => m.type && m.type.displayName == 'AnimatedUnreadChannelMessages')
+        const AnimatedUnreadChannel = await getModule(m => m.type && m.type.displayName == 'AnimatedUnreadChannel')
 
-        inject('inbox-unread-count', AnimatedUnreadChannelMessages, 'type', (_, res) => {
+        inject('inbox-unread-count', AnimatedUnreadChannel, 'type', (_, res) => {
             if (!res.props.children || !res.props.children.type || !res.props.children.type.type) return res
 
             const { type } = res.props.children.type
@@ -36,7 +36,7 @@ module.exports = class InboxUnreadCount extends Plugin {
 
             return res
         })
-        AnimatedUnreadChannelMessages.type.displayName = 'AnimatedUnreadChannelMessages'
+        AnimatedUnreadChannel.type.displayName = 'AnimatedUnreadChannel'
     }
 
     pluginWillUnload() {
