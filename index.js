@@ -8,19 +8,14 @@ module.exports = class InboxUnreadCount extends Plugin {
         const { dateFormat, isSameDay } = await getModule(['dateFormat'])
         const AnimatedUnreadChannel = await getModule(m => m.type && m.type.displayName == 'AnimatedUnreadChannel')
 
-        inject('inbox-unread-count', AnimatedUnreadChannel, 'type', (_, res) => {
+        inject('inbox-unread-count2', AnimatedUnreadChannel, 'type', (_, res) => {
             if (!res.props.children || !res.props.children.type || !res.props.children.type.type) return res
 
             const { type } = res.props.children.type
-            if (type._inbox_count) return res
-            res.props.children.type.type = (...a) => {
-                const r = type(...a)
-                if (!r) return r
-
-                const { messages } = a[0].channel
-                if (!messages.length) return r
+            inject('inbox-unread-count', res.props.children.type, 'type', ([{ channel: { messages } }], res) => {
+                if (!messages.length || !res.props.children[1]) return res
                 const since = dateFormat(messages[0].timestamp, isSameDay(messages[0].timestamp, { toDate: () => new Date }) ? 'LT' : 'LLL')
-                r.props.children.splice(1, 0,
+                res.props.children.splice(1, 0,
                     React.createElement(Text, {
                             color: Text.Colors.HEADER_SECONDARY,
                             style: { margin: '0 7px 7px' }
@@ -28,11 +23,10 @@ module.exports = class InboxUnreadCount extends Plugin {
                         `${messages.length > 25 ? '25+' : messages.length} unreads since ${since}`
                     )
                 )
-
-                return r
-            }
+                return res
+            })
             res.props.children.type.type.displayName = type.displayName
-            res.props.children.type.type._inbox_count = true
+            uninject('inbox-unread-count2')
 
             return res
         })
@@ -41,5 +35,6 @@ module.exports = class InboxUnreadCount extends Plugin {
 
     pluginWillUnload() {
         uninject('inbox-unread-count')
+        uninject('inbox-unread-count2')
     }
 }
